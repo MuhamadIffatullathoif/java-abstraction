@@ -1,6 +1,6 @@
 package org.iffat.abstract_class;
 
-public class Dog extends Animal{
+public class Dog extends Animal {
 
     public Dog(String type, String size, double weight) {
         super(type, size, weight);
@@ -8,11 +8,19 @@ public class Dog extends Animal{
 
     @Override
     public void move(String speed) {
-
+        if (speed.equals("slow")) {
+            System.out.println(type + " walking");
+        } else {
+            System.out.println(type + " running");
+        }
     }
 
     @Override
     public void makeNoise() {
-
+        if (type == "Wolf") {
+            System.out.print("Howling!");
+        } else {
+            System.out.print("Woof! ");
+        }
     }
 }
