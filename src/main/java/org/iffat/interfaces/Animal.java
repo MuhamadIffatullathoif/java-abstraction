@@ -1,5 +1,7 @@
 package org.iffat.interfaces;
 
+import java.util.Date;
+
 enum FlightStages implements Trackable {
     GROUNDED,
     LAUNCH,
@@ -40,30 +42,59 @@ record DragonFly(String name, String type) implements FlightEnabled {
 
 class Satellite implements OrbitEarth {
 
+    FlightStages stages = FlightStages.GROUNDED;
+
     @Override
     public void achieveOrbit() {
-        System.out.println("Orbit Achieved");
+        transition("Orbit Achieved");
     }
 
     @Override
     public void takeOff() {
-
+        transition("Taking off");
     }
 
     @Override
     public void land() {
-
+        transition("Landing");
     }
 
     @Override
     public void fly() {
+        achieveOrbit();
+        transition("Data Collection while Orbiting");
+    }
 
+    public void transition(String description) {
+
+        System.out.println(description);
+        stages = transition(stages);
+        stages.track();
     }
 }
 
 interface OrbitEarth extends FlightEnabled {
 
     void achieveOrbit();
+
+    static void log(String description) {
+        var today = new Date();
+        System.out.println(today + ": " + description);
+    }
+
+    private void logStage(FlightStages stages, String description) {
+
+        description = stages + ": " + description;
+        log(description);
+    }
+
+    @Override
+    default FlightStages transition(FlightStages stages) {
+
+        FlightStages nextStage = FlightEnabled.super.transition(stages);
+        logStage(stages, "Beginning Transition to " + nextStage);
+        return nextStage;
+    }
 }
 
 interface FlightEnabled {
